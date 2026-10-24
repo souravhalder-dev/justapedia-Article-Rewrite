@@ -1,12 +1,12 @@
-# American English Article Rewrite & Localization Tool for MediaWiki
+# American English Article Rewrite & Localization Tool for justapedia
 
 A production-ready web application designed to rewrite, localize, proofread, and improve MediaWiki articles into natural, consistent, professional American English while strictly preserving MediaWiki wikitext markup, templates, infoboxes, citations, links, and factual accuracy.
 
-Configured by default to integrate with **[Justapedia](https://justapedia.org/api.php)** and fully compatible with Wikipedia, Wikivoyage, and any MediaWiki 1.35+ action API.
+Configured by default to integrate with **[Justapedia](https://justapedia.org/api.php)** and fully compatible with Wikipedia, Wikivoyage, and any MediaWiki action API.
 
 ---
 
-## 🚀 Key Features
+##  Key Features
 
 ### 1. Context-Aware American English Localization
 - **American Spelling Conversion**: Converts non-American spellings (`-our` → `-or`, `-ise` → `-ize`, `-re` → `-er`, `-yse` → `-yze`, `-ogue` → `-og`, `-ence` → `-ense`, double-consonant inflections like `travelled` → `traveled`, `cancelled` → `canceled`, `programme` → `program`, `grey` → `gray`, etc.).
@@ -53,7 +53,7 @@ Configured by default to integrate with **[Justapedia](https://justapedia.org/ap
 
 ---
 
-## 🛠 Technology Stack
+##  Technology Stack
 
 - **Backend**: Python 3.10+, FastAPI, Uvicorn, mwparserfromhell, httpx, pydantic, difflib, google-genai (optional AI).
 - **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, Lucide Icons.
@@ -61,7 +61,7 @@ Configured by default to integrate with **[Justapedia](https://justapedia.org/ap
 
 ---
 
-## 📦 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -94,7 +94,7 @@ The Next.js frontend will open on `http://localhost:3000`.
 
 ---
 
-## 🧪 Automated Testing
+##  Automated Testing
 
 Run the comprehensive pytest suite covering the AST parser, rules engine, validation, and live Justapedia API client:
 
@@ -110,7 +110,7 @@ Test coverage includes:
 
 ---
 
-## ⚙️ Configuration & Customization
+##  Configuration & Customization
 
 - **MediaWiki Endpoint**: Can be changed on the fly in the UI (Settings / Header) or defaults to `https://justapedia.org/api.php`.
 - **AI Semantic Engine**: Under UI Settings, toggle between **Deterministic Rules** (100% offline, zero API keys required) and **AI Semantic Rewriter** (powered by Google Gemini). Provide an optional API key or set the `GEMINI_API_KEY` environment variable.
