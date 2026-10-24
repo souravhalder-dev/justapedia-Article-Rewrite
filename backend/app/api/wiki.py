@@ -6,7 +6,7 @@ bot/user authentication, CSRF tokens, edit conflict detection, and safe saving.
 
 import httpx
 import re
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Tuple
 from fastapi import APIRouter, HTTPException, Request, Response, Header
 from pydantic import BaseModel, HttpUrl
 
@@ -90,8 +90,6 @@ def _get_or_create_session(session_id: Optional[str]) -> Tuple[str, Dict[str, An
         return sid, SESSION_STORE[sid]
     return session_id, SESSION_STORE[session_id]
 
-
-from typing import Tuple
 
 
 @router.post("/fetch")
