@@ -2,7 +2,7 @@
 
 A production-ready web application designed to rewrite, localize, proofread, and improve MediaWiki articles into natural, consistent, professional American English while strictly preserving MediaWiki wikitext markup, templates, infoboxes, citations, links, and factual accuracy.
 
-Configured by default to integrate with **[Justapedia](https://justapedia.org/api.php)** and fully compatible with Wikipedia, Wikivoyage, and any MediaWiki action API.
+Configured by default to integrate with **[Justapedia](https://justapedia.org/api.php)** 
 
 ---
 
