@@ -34,8 +34,10 @@ class ParsePreviewRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    username: str
-    password: str  # User password or Bot password
+    auth_method: str = "password"  # "password" or "cookie"
+    username: Optional[str] = None
+    password: Optional[str] = None
+    session_cookie: Optional[str] = None
     endpoint: str = DEFAULT_ENDPOINT
 
 
@@ -220,23 +222,92 @@ async def parse_preview(req: ParsePreviewRequest):
 async def mediawiki_login(req: LoginRequest, response: Response, x_session_id: Optional[str] = Header(None)):
     """
     Authenticates with MediaWiki Action API.
-    Supports Bot Passwords and standard ClientLogin / Login tokens.
+    Supports:
+    1. Browser Session Cookie / Token (100% bypasses Cloudflare CAPTCHA blocks on Justapedia)
+    2. Bot Passwords & standard Action API login
     """
     endpoint = _clean_endpoint(req.endpoint)
     sid, session_data = _get_or_create_session(x_session_id)
     response.headers["X-Session-Id"] = sid
 
-    headers = {"User-Agent": "AmericanEnglishLocalizationTool/1.0"}
+    browser_headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+        "Accept": "application/json, text/plain, */*"
+    }
 
-    async with httpx.AsyncClient(timeout=20.0) as client:
+    # METHOD 1: Session Cookie / Token Authentication
+    if req.auth_method == "cookie" or (req.session_cookie and not req.password):
+        cookie_str = (req.session_cookie or "").strip()
+        if not cookie_str:
+            raise HTTPException(status_code=400, detail="Session cookie string cannot be empty.")
+
+        cookies_dict = {}
+        for part in cookie_str.split(";"):
+            part = part.strip()
+            if "=" in part:
+                k, v = part.split("=", 1)
+                cookies_dict[k.strip()] = v.strip()
+
+        if not cookies_dict:
+            raise HTTPException(status_code=400, detail="Invalid cookie format. Example: justapedia_mediawiki_session=abc12345")
+
+        async with httpx.AsyncClient(timeout=20.0, follow_redirects=True) as client:
+            try:
+                user_res = await client.get(
+                    endpoint,
+                    params={
+                        "action": "query",
+                        "meta": "tokens|userinfo",
+                        "type": "csrf",
+                        "uiprop": "rights|groups",
+                        "format": "json"
+                    },
+                    headers=browser_headers,
+                    cookies=cookies_dict
+                )
+                user_json = user_res.json()
+            except Exception as e:
+                raise HTTPException(status_code=400, detail=f"Failed to query MediaWiki with cookie: {str(e)}")
+
+            user_info = user_json.get("query", {}).get("userinfo", {})
+            if user_info.get("anon") is not None or user_info.get("id", 0) == 0:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Provided session cookie was not recognized as an active logged-in account on this wiki. Please log in through your browser and copy your current session cookie."
+                )
+
+            csrf_token = user_json.get("query", {}).get("tokens", {}).get("csrftoken")
+            session_data["cookies"] = cookies_dict
+            session_data["username"] = user_info.get("name")
+            session_data["logged_in"] = True
+            session_data["csrf_token"] = csrf_token
+            session_data["endpoint"] = endpoint
+            session_data["rights"] = user_info.get("rights", [])
+
+            return {
+                "success": True,
+                "username": session_data["username"],
+                "session_id": sid,
+                "rights": session_data["rights"],
+                "endpoint": endpoint
+            }
+
+    # METHOD 2: Direct Username & Password / Bot Password
+    if not req.username or not req.password:
+        raise HTTPException(status_code=400, detail="Username and password are required for password login.")
+
+    async with httpx.AsyncClient(timeout=20.0, follow_redirects=False) as client:
         # Step 1: Request login token
-        token_res = await client.get(
-            endpoint,
-            params={"action": "query", "meta": "tokens", "type": "login", "format": "json"},
-            headers=headers
-        )
-        token_data = token_res.json()
-        login_token = token_data.get("query", {}).get("tokens", {}).get("logintoken")
+        try:
+            token_res = await client.get(
+                endpoint,
+                params={"action": "query", "meta": "tokens", "type": "login", "format": "json"},
+                headers=browser_headers
+            )
+            token_data = token_res.json()
+            login_token = token_data.get("query", {}).get("tokens", {}).get("logintoken")
+        except Exception:
+            raise HTTPException(status_code=502, detail="Unable to retrieve login token. MediaWiki returned non-JSON response.")
 
         if not login_token:
             raise HTTPException(status_code=502, detail="Unable to retrieve login token from MediaWiki API.")
@@ -249,12 +320,39 @@ async def mediawiki_login(req: LoginRequest, response: Response, x_session_id: O
             "lgtoken": login_token,
             "format": "json"
         }
-        login_resp = await client.post(endpoint, data=login_payload, headers=headers, cookies=token_res.cookies)
-        login_json = login_resp.json()
+        try:
+            login_resp = await client.post(
+                endpoint,
+                data=login_payload,
+                headers=browser_headers,
+                cookies=token_res.cookies
+            )
+        except Exception as e:
+            raise HTTPException(status_code=502, detail=f"Login connection failed: {str(e)}")
+
+        # Detect Cloudflare captcha challenge (302 redirect or 429)
+        if login_resp.status_code in (302, 429) or "captcha" in login_resp.text.lower():
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "Cloudflare CAPTCHA / Bot Protection detected on this wiki (Justapedia). "
+                    "Automated password login was challenged by Cloudflare. "
+                    "Please click the 'Session Cookie / Token' tab in the Login modal to connect directly "
+                    "using your browser's active session without triggering Cloudflare."
+                )
+            )
+
+        try:
+            login_json = login_resp.json()
+        except Exception:
+            raise HTTPException(
+                status_code=400,
+                detail=f"MediaWiki returned non-JSON response ({login_resp.status_code}). If using Justapedia, please use the Session Cookie authentication method."
+            )
+
         login_result = login_json.get("login", {})
 
         if login_result.get("result") != "Success":
-            # If standard login needs second step or failed:
             reason = login_result.get("reason", login_result.get("result", "Login failed"))
             raise HTTPException(status_code=401, detail=f"MediaWiki authentication failed: {reason}")
 
@@ -266,7 +364,7 @@ async def mediawiki_login(req: LoginRequest, response: Response, x_session_id: O
         csrf_res = await client.get(
             endpoint,
             params={"action": "query", "meta": "tokens|userinfo", "type": "csrf", "uiprop": "rights|groups", "format": "json"},
-            headers=headers,
+            headers=browser_headers,
             cookies=cookies_dict
         )
         csrf_json = csrf_res.json()

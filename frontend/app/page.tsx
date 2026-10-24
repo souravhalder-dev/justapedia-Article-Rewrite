@@ -323,14 +323,39 @@ export default function Home() {
   };
 
   // Handle Login
-  const handleLogin = async (username: string, password: string, ep: string) => {
-    const res = await fetch("/api/wiki/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password, endpoint: ep }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.detail || "Login failed.");
+  const handleLogin = async (loginData: {
+    auth_method: "password" | "cookie";
+    username?: string;
+    password?: string;
+    session_cookie?: string;
+    endpoint: string;
+  }) => {
+    let res: Response;
+    try {
+      res = await fetch("/api/wiki/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loginData),
+      });
+    } catch (netErr: any) {
+      throw new Error(`Network error connecting to API: ${netErr.message}`);
+    }
+
+    let data: any;
+    const rawText = await res.text();
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      throw new Error(
+        res.status === 405
+          ? "Method Not Allowed on Vercel. Please check API serverless route configuration."
+          : `Server returned non-JSON response (${res.status}): ${rawText.slice(0, 120)}`
+      );
+    }
+
+    if (!res.ok) {
+      throw new Error(data.detail || "Authentication failed.");
+    }
 
     const sid = data.session_id;
     if (sid) {
@@ -338,7 +363,7 @@ export default function Home() {
       setSessionId(sid);
     }
     setUser({ logged_in: true, username: data.username, rights: data.rights });
-    setEndpoint(ep);
+    setEndpoint(loginData.endpoint);
     showToast("success", `Logged in as ${data.username}`);
     return data;
   };
