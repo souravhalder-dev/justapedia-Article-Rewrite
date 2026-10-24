@@ -45,7 +45,11 @@ def health_check():
     }
 
 
-# If frontend static build exists, mount it
+# Mount frontend static export if available
+frontend_out = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "out")
 static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static")
-if os.path.exists(static_dir):
+
+if os.path.exists(frontend_out):
+    app.mount("/", StaticFiles(directory=frontend_out, html=True), name="static")
+elif os.path.exists(static_dir):
     app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
