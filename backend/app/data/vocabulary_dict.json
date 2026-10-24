@@ -1,0 +1,257 @@
+[
+  {
+    "id": "vocab_lorry",
+    "term": "lorry",
+    "replacement": "truck",
+    "plural_term": "lorries",
+    "plural_replacement": "trucks",
+    "pos": "noun",
+    "confidence": 0.95,
+    "category": "vocabulary",
+    "explanation": "In American English, 'truck' is used rather than 'lorry'."
+  },
+  {
+    "id": "vocab_petrol",
+    "term": "petrol",
+    "replacement": "gasoline",
+    "pos": "noun",
+    "confidence": 0.95,
+    "category": "vocabulary",
+    "explanation": "In American English, 'gasoline' (or 'gas') is used rather than 'petrol'."
+  },
+  {
+    "id": "vocab_mobile_phone",
+    "term": "mobile phone",
+    "replacement": "cell phone",
+    "plural_term": "mobile phones",
+    "plural_replacement": "cell phones",
+    "pos": "noun",
+    "confidence": 0.95,
+    "category": "vocabulary",
+    "explanation": "In American English, 'cell phone' or 'cellular phone' is used instead of 'mobile phone'."
+  },
+  {
+    "id": "vocab_maths",
+    "term": "maths",
+    "replacement": "math",
+    "pos": "noun",
+    "confidence": 0.98,
+    "category": "vocabulary",
+    "explanation": "In American English, 'math' is the standard abbreviation for mathematics, not 'maths'."
+  },
+  {
+    "id": "vocab_autumn",
+    "term": "autumn",
+    "replacement": "fall",
+    "pos": "noun",
+    "confidence": 0.85,
+    "category": "vocabulary",
+    "explanation": "'Fall' is standard American English for the season between summer and winter, though 'autumn' is also understood."
+  },
+  {
+    "id": "vocab_pavement",
+    "term": "pavement",
+    "replacement": "sidewalk",
+    "pos": "noun",
+    "context_required": [
+      "walk",
+      "pedestrian",
+      "stood",
+      "street",
+      "road",
+      "kerb",
+      "curb"
+    ],
+    "confidence": 0.85,
+    "category": "vocabulary",
+    "explanation": "In British English, 'pavement' refers to a pedestrian path (American 'sidewalk'). In American English, 'pavement' refers to the paved road surface itself."
+  },
+  {
+    "id": "vocab_lift",
+    "term": "lift",
+    "replacement": "elevator",
+    "plural_term": "lifts",
+    "plural_replacement": "elevators",
+    "pos": "noun",
+    "context_required": [
+      "the",
+      "a",
+      "an",
+      "in",
+      "take",
+      "took",
+      "shaft",
+      "door",
+      "button",
+      "floor",
+      "building",
+      "service"
+    ],
+    "confidence": 0.9,
+    "category": "vocabulary",
+    "explanation": "In British English, 'lift' refers to an elevator. As a noun in building contexts, American English uses 'elevator'."
+  },
+  {
+    "id": "vocab_flat",
+    "term": "flat",
+    "replacement": "apartment",
+    "plural_term": "flats",
+    "plural_replacement": "apartments",
+    "pos": "noun",
+    "context_required": [
+      "in",
+      "a",
+      "the",
+      "their",
+      "his",
+      "her",
+      "two-bedroom",
+      "three-bedroom",
+      "rented",
+      "lived",
+      "block",
+      "residential",
+      "studio"
+    ],
+    "confidence": 0.9,
+    "category": "vocabulary",
+    "explanation": "In British English, 'flat' is commonly used for a residential unit; American English uses 'apartment'."
+  },
+  {
+    "id": "vocab_queue",
+    "term": "queue",
+    "replacement": "line",
+    "plural_term": "queues",
+    "plural_replacement": "lines",
+    "pos": "noun",
+    "context_required": [
+      "in",
+      "the",
+      "a",
+      "stood",
+      "wait",
+      "waiting",
+      "people",
+      "customers",
+      "ticket"
+    ],
+    "confidence": 0.85,
+    "category": "vocabulary",
+    "explanation": "In British English, people wait in a 'queue'; in American English, they wait in a 'line'."
+  },
+  {
+    "id": "vocab_windscreen",
+    "term": "windscreen",
+    "replacement": "windshield",
+    "plural_term": "windscreens",
+    "plural_replacement": "windshields",
+    "pos": "noun",
+    "confidence": 0.95,
+    "category": "vocabulary",
+    "explanation": "In American automotive terminology, 'windshield' is used rather than 'windscreen'."
+  },
+  {
+    "id": "vocab_car_park",
+    "term": "car park",
+    "replacement": "parking lot",
+    "plural_term": "car parks",
+    "plural_replacement": "parking lots",
+    "pos": "noun",
+    "confidence": 0.95,
+    "category": "vocabulary",
+    "explanation": "In American English, 'parking lot' is standard rather than 'car park'."
+  },
+  {
+    "id": "vocab_flyover",
+    "term": "flyover",
+    "replacement": "overpass",
+    "plural_term": "flyovers",
+    "plural_replacement": "overpasses",
+    "pos": "noun",
+    "confidence": 0.9,
+    "category": "vocabulary",
+    "explanation": "In American road terminology, a vehicular bridge over a highway is an 'overpass', not a 'flyover'."
+  },
+  {
+    "id": "vocab_rubbish",
+    "term": "rubbish",
+    "replacement": "trash",
+    "pos": "noun",
+    "confidence": 0.9,
+    "category": "vocabulary",
+    "explanation": "In American English, discarded waste is called 'trash' or 'garbage', rather than 'rubbish'."
+  },
+  {
+    "id": "vocab_dustbin",
+    "term": "dustbin",
+    "replacement": "trash can",
+    "plural_term": "dustbins",
+    "plural_replacement": "trash cans",
+    "pos": "noun",
+    "confidence": 0.95,
+    "category": "vocabulary",
+    "explanation": "In American English, a waste receptacle is a 'trash can' or 'garbage can'."
+  },
+  {
+    "id": "vocab_torch",
+    "term": "torch",
+    "replacement": "flashlight",
+    "plural_term": "torches",
+    "plural_replacement": "flashlights",
+    "pos": "noun",
+    "context_required": [
+      "battery",
+      "electric",
+      "held",
+      "pocket",
+      "switched",
+      "shone",
+      "beam",
+      "dark"
+    ],
+    "confidence": 0.9,
+    "category": "vocabulary",
+    "explanation": "In American English, a portable battery-powered electric light is a 'flashlight'."
+  },
+  {
+    "id": "vocab_postcode",
+    "term": "post code",
+    "replacement": "ZIP code",
+    "plural_term": "post codes",
+    "plural_replacement": "ZIP codes",
+    "pos": "noun",
+    "context_required": [
+      "united states",
+      "u.s.",
+      "us",
+      "american",
+      "california",
+      "new york"
+    ],
+    "confidence": 0.9,
+    "category": "vocabulary",
+    "explanation": "For United States addresses, 'ZIP code' is standard; keep national postal code terminology for non-US countries."
+  },
+  {
+    "id": "vocab_zebra_crossing",
+    "term": "zebra crossing",
+    "replacement": "crosswalk",
+    "plural_term": "zebra crossings",
+    "plural_replacement": "crosswalks",
+    "pos": "noun",
+    "confidence": 0.95,
+    "category": "vocabulary",
+    "explanation": "In American English, a pedestrian street crossing is called a 'crosswalk'."
+  },
+  {
+    "id": "vocab_estate_agent",
+    "term": "estate agent",
+    "replacement": "real estate agent",
+    "plural_term": "estate agents",
+    "plural_replacement": "real estate agents",
+    "pos": "noun",
+    "confidence": 0.95,
+    "category": "vocabulary",
+    "explanation": "In American English, 'real estate agent' is used instead of 'estate agent'."
+  }
+]
